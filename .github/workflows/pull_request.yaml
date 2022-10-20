@@ -1,0 +1,58 @@
+name: pull_request
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Set up Go v1.19
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.19
+
+      - name: Clone Repository
+        uses: actions/checkout@v3
+
+      - name: Did you run go mod tidy?
+        run: |
+          go mod tidy
+          RESULT=$(git status)
+          git diff
+          echo "-- DEBUG: git status result: ${RESULT}"
+          if [[ $RESULT == *"Changes not staged for commit:"* || $RESULT == *"Untracked files:"* ]]; then
+              PR_NUMBER=$(echo $GITHUB_REF | awk 'BEGIN { FS = "/" } ; { print $3 }')
+              gh --repo "${GITHUB_REPOSITORY}" pr comment ${PR_NUMBER} --body "Ooops 🤭!\n🛑 Please run go mod tidy and push the code again."
+              git diff
+              exit 1
+          else
+              echo "✅ You are good to go 🚀."
+          fi
+
+      - name: Did you run generate a new rooms.json?
+        run: |
+          go run ./main.go
+          RESULT=$(git status)
+          git diff
+          echo "-- DEBUG: git status result: ${RESULT}"
+          if [[ $RESULT == *"Changes not staged for commit:"* || $RESULT == *"Untracked files:"* ]]; then
+              PR_NUMBER=$(echo $GITHUB_REF | awk 'BEGIN { FS = "/" } ; { print $3 }')
+              gh --repo "${GITHUB_REPOSITORY}" pr comment ${PR_NUMBER} --body "Ooops 🤭!\n🛑 Please run the main file and push the code again."
+              git diff
+              exit 1
+          else
+              echo "✅ You are good to go 🚀."
+          fi
+
+
+      - name: Run Tests
+        run: |
+          go test -v ./...
