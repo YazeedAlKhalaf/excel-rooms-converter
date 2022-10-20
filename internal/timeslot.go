@@ -1,8 +1,8 @@
 package internal
 
 type TimeSlot struct {
-	TimeStart  TimeOfDay
-	TimeEnd    TimeOfDay
+	TimeStart  TimeOfDay `json:"time_start"`
+	TimeEnd    TimeOfDay `json:"time_end"`
 	CourseName string
 }
 

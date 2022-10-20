@@ -1,7 +1,9 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"os"
 	"rooms-excel-converter/internal"
 
 	"github.com/elliotchance/orderedmap/v2"
@@ -126,6 +128,14 @@ func main() {
 			})
 		}
 	}
+
+	roomsJsonByte, err := json.Marshal(rooms)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	os.WriteFile("rooms.json", roomsJsonByte, 0644)
 }
 
 func isNotDayName(s string) bool {

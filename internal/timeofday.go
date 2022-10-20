@@ -7,8 +7,8 @@ import (
 )
 
 type TimeOfDay struct {
-	hour   int
-	minute int
+	Hour   int `json:"hour"`
+	Minute int `json:"minute"`
 }
 
 func NewTimeOfDay(hour int, minute int) (*TimeOfDay, error) {
@@ -17,8 +17,8 @@ func NewTimeOfDay(hour int, minute int) (*TimeOfDay, error) {
 	}
 
 	return &TimeOfDay{
-		hour:   hour,
-		minute: minute,
+		Hour:   hour,
+		Minute: minute,
 	}, nil
 }
 

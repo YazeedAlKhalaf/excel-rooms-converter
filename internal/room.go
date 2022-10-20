@@ -1,12 +1,12 @@
 package internal
 
 type Room struct {
-	Name      string
-	Sunday    []TimeSlot
-	Monday    []TimeSlot
-	Tuesday   []TimeSlot
-	Wednesday []TimeSlot
-	Thursday  []TimeSlot
+	Name      string     `json:"name"`
+	Sunday    []TimeSlot `json:"sunday"`
+	Monday    []TimeSlot `json:"monday"`
+	Tuesday   []TimeSlot `json:"tuesday"`
+	Wednesday []TimeSlot `json:"wednesday"`
+	Thursday  []TimeSlot `json:"thursday"`
 }
 
 func (r *Room) SetName(n string) {
