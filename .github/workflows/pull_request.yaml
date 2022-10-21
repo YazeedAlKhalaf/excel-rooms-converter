@@ -52,7 +52,12 @@ jobs:
               echo "✅ You are good to go 🚀."
           fi
 
-
-      - name: Run Tests
+      - name: Run Tests with coverage
         run: |
-          go test -v ./...
+          go test -v -coverprofile=coverage.out ./...
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage.out

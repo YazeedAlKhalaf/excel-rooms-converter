@@ -81,7 +81,7 @@ func main() {
 			continue
 		}
 
-		if isNotDayName(row[3]) {
+		if !internal.IsDayName(row[3]) {
 			timeStart, err := internal.ParseTimeOfDay(row[0])
 			if err != nil {
 				fmt.Println("index:", index, "error parsing time start:", err)
@@ -136,12 +136,4 @@ func main() {
 	}
 
 	os.WriteFile("rooms.json", roomsJsonByte, 0644)
-}
-
-func isNotDayName(s string) bool {
-	if s == "Sunday" || s == "Monday" || s == "Tuesday" || s == "Wednesday" || s == "Thursday" {
-		return false
-	}
-
-	return true
 }
