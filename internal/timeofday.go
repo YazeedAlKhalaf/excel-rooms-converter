@@ -13,7 +13,7 @@ type TimeOfDay struct {
 
 func NewTimeOfDay(hour int, minute int) (*TimeOfDay, error) {
 	if hour < 0 || hour > 23 || minute < 0 || minute > 59 {
-		return &TimeOfDay{}, nil
+		return &TimeOfDay{}, fmt.Errorf("invalid hour or minute, expected: 0 <= hour <= 23, 0 <= minute <= 59, but got: %d:%d", hour, minute)
 	}
 
 	return &TimeOfDay{
@@ -23,16 +23,15 @@ func NewTimeOfDay(hour int, minute int) (*TimeOfDay, error) {
 }
 
 func ParseTimeOfDay(time string) (*TimeOfDay, error) {
-	// "12:30 AM"
 	timePartsWithAMandPM := strings.Split(time, " ")
 	if len(timePartsWithAMandPM) != 2 {
 		return &TimeOfDay{}, fmt.Errorf("invalid time format, expected: 12:30 AM, got: %s", time)
 	}
-	isAM := timePartsWithAMandPM[1] == "AM"
-	isPM := timePartsWithAMandPM[1] == "PM"
 
 	// (isAM && isPM) || (!isAM && !isPM)
 	// that can't be both true or both false, so it's invalid
+	isAM := timePartsWithAMandPM[1] == "AM"
+	isPM := timePartsWithAMandPM[1] == "PM"
 	if isAM == isPM {
 		return &TimeOfDay{}, fmt.Errorf("invalid am or pm format, expected: 12:30 AM, but got: %s", time)
 	}
@@ -45,6 +44,12 @@ func ParseTimeOfDay(time string) (*TimeOfDay, error) {
 	hour, err := strconv.ParseInt(timeParts[0], 10, 64)
 	if err != nil {
 		return &TimeOfDay{}, fmt.Errorf("invalid hour format, expected: 12:30 AM, but got: %s", time)
+	}
+	if isPM {
+		hour += 12
+		if hour == 24 {
+			hour = 0
+		}
 	}
 
 	minute, err := strconv.ParseInt(timeParts[1], 10, 64)
