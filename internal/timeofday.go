@@ -85,3 +85,19 @@ func (t *TimeOfDay) IsAfter(t2 *TimeOfDay) bool {
 	// if we reach this, it means the hours are equal
 	return t.Minute > t2.Minute
 }
+
+func (t *TimeOfDay) IsEqual(ts *TimeOfDay) bool {
+	return t.Hour == ts.Hour && t.Minute == ts.Minute
+}
+
+func (t *TimeOfDay) AddMinutes(minutes int) (*TimeOfDay, error) {
+	if minutes < 0 {
+		return &TimeOfDay{}, fmt.Errorf("invalid minutes, expected: minutes >= 0, but got: %d", minutes)
+	}
+
+	minutes += t.Minute
+	hours := t.Hour + minutes/60
+	minutes = minutes % 60
+
+	return NewTimeOfDay(hours, minutes)
+}

@@ -129,6 +129,32 @@ func main() {
 		})
 	}
 
+	for _, r := range rooms {
+		// originalSundayLen := len(r.Sunday)
+		// for i, ts := range r.Sunday {
+		// 	currentSundayLen := len(r.Sunday)
+		// 	if currentSundayLen == i+1+(currentSundayLen-originalSundayLen) {
+		// 		break
+		// 	}
+
+		// 	ts = r.Sunday[i+(currentSundayLen-originalSundayLen)]
+		// 	nts := r.Sunday[i+1+(currentSundayLen-originalSundayLen)]
+		// 	if !ts.TimeEnd.IsEqual(&nts.TimeStart) {
+		// 		freeTS := internal.TimeSlot{
+		// 			TimeStart:  ts.TimeEnd,
+		// 			TimeEnd:    nts.TimeStart,
+		// 			CourseName: "",
+		// 		}
+		// 		r.Sunday = internal.InsertToSlice(r.Sunday, freeTS, i+1+(currentSundayLen-originalSundayLen))
+		// 	}
+		// }
+		r.Sunday = addBreaksToTimeSlots(r.Sunday)
+		r.Monday = addBreaksToTimeSlots(r.Monday)
+		r.Tuesday = addBreaksToTimeSlots(r.Tuesday)
+		r.Wednesday = addBreaksToTimeSlots(r.Wednesday)
+		r.Thursday = addBreaksToTimeSlots(r.Thursday)
+	}
+
 	roomsJsonByte, err := json.Marshal(rooms)
 	if err != nil {
 		fmt.Println(err)
@@ -136,4 +162,27 @@ func main() {
 	}
 
 	os.WriteFile("rooms.json", roomsJsonByte, 0644)
+}
+
+func addBreaksToTimeSlots(tss []internal.TimeSlot) []internal.TimeSlot {
+	originalTSSLen := len(tss)
+	for i, ts := range tss {
+		currentTSSLen := len(tss)
+		if currentTSSLen == i+1+(currentTSSLen-originalTSSLen) {
+			break
+		}
+
+		ts = tss[i+(currentTSSLen-originalTSSLen)]
+		nts := tss[i+1+(currentTSSLen-originalTSSLen)]
+		if !ts.TimeEnd.IsEqual(&nts.TimeStart) {
+			freeTS := internal.TimeSlot{
+				TimeStart:  ts.TimeEnd,
+				TimeEnd:    nts.TimeStart,
+				CourseName: "",
+			}
+			tss = internal.InsertToSlice(tss, freeTS, i+1+(currentTSSLen-originalTSSLen))
+		}
+	}
+
+	return tss
 }
