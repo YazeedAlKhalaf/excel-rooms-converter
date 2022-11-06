@@ -6,7 +6,6 @@ import (
 	"os"
 	"rooms-excel-converter/internal"
 
-	"github.com/elliotchance/orderedmap/v2"
 	"github.com/xuri/excelize/v2"
 )
 
@@ -28,41 +27,13 @@ func main() {
 		return
 	}
 
-	rowsNormalized := make([][]string, 0)
-	for _, row := range rows {
-		rowToNormalize := row
-
-		if len(rowToNormalize) == 0 || rowToNormalize[0] == "Times" {
-			continue
-		}
-
-		if rowToNormalize[0] == "Days" {
-			rowToNormalize[0] = "time_start"
-			rowToNormalize[1] = "time_end"
-		}
-		rowsNormalized = append(rowsNormalized, rowToNormalize)
-	}
-
-	indexWithRooms := orderedmap.NewOrderedMap[int, string]()
-	for index, row := range rowsNormalized {
-		if row[1] == "Room:" {
-			roomName := row[2]
-			indexWithRooms.Set(index, roomName)
-		}
-	}
-
-	roomsRowsCount := make(map[string]int)
-	for el := indexWithRooms.Front(); el != nil; el = el.Next() {
-		if el == nil || el.Next() == nil {
-			continue
-		}
-
-		roomsRowsCount[(*el).Value] = ((*el).Next().Key - (*el).Key) - 1
-	}
-
 	rooms := make(map[string]*internal.Room)
 	lastRoomName := ""
-	for index, row := range rowsNormalized {
+	for index, row := range rows {
+		if len(row) == 0 || row[0] == "Times" || row[0] == "Days" {
+			continue
+		}
+
 		if row[1] == "Room:" {
 			lastRoomName = row[2]
 
@@ -74,10 +45,6 @@ func main() {
 				rooms[lastRoomName].SetName(lastRoomName)
 			}
 
-			continue
-		}
-
-		if row[0] == "time_start" {
 			continue
 		}
 
