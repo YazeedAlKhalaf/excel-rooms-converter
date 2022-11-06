@@ -3,7 +3,6 @@ module rooms-excel-converter
 go 1.19
 
 require (
-	github.com/elliotchance/orderedmap/v2 v2.2.0
 	github.com/stretchr/testify v1.7.1
 	github.com/xuri/excelize/v2 v2.6.1
 )
