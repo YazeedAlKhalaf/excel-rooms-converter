@@ -59,3 +59,29 @@ func ParseTimeOfDay(time string) (*TimeOfDay, error) {
 
 	return NewTimeOfDay(int(hour), int(minute))
 }
+
+func (t *TimeOfDay) IsBefore(t2 *TimeOfDay) bool {
+	if t.Hour < t2.Hour {
+		return true
+	}
+
+	if t.Hour > t2.Hour {
+		return false
+	}
+
+	// if we reach this, it means the hours are equal
+	return t.Minute < t2.Minute
+}
+
+func (t *TimeOfDay) IsAfter(t2 *TimeOfDay) bool {
+	if t.Hour > t2.Hour {
+		return true
+	}
+
+	if t.Hour < t2.Hour {
+		return false
+	}
+
+	// if we reach this, it means the hours are equal
+	return t.Minute > t2.Minute
+}

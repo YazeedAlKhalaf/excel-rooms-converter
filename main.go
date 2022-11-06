@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"rooms-excel-converter/internal"
+	"sort"
 
 	"github.com/xuri/excelize/v2"
 )
@@ -68,32 +69,64 @@ func main() {
 				}
 			}
 
-			rooms[lastRoomName].AppendTimeSlotToSunday(internal.TimeSlot{
-				TimeStart:  *timeStart,
-				TimeEnd:    *timeEnd,
-				CourseName: row[3],
-			})
-			rooms[lastRoomName].AppendTimeSlotToMonday(internal.TimeSlot{
-				TimeStart:  *timeStart,
-				TimeEnd:    *timeEnd,
-				CourseName: row[4],
-			})
-			rooms[lastRoomName].AppendTimeSlotToTuesday(internal.TimeSlot{
-				TimeStart:  *timeStart,
-				TimeEnd:    *timeEnd,
-				CourseName: row[5],
-			})
-			rooms[lastRoomName].AppendTimeSlotToWednesday(internal.TimeSlot{
-				TimeStart:  *timeStart,
-				TimeEnd:    *timeEnd,
-				CourseName: row[6],
-			})
-			rooms[lastRoomName].AppendTimeSlotToThursday(internal.TimeSlot{
-				TimeStart:  *timeStart,
-				TimeEnd:    *timeEnd,
-				CourseName: row[7],
-			})
+			if row[3] != "" {
+				rooms[lastRoomName].AppendTimeSlotToSunday(internal.TimeSlot{
+					TimeStart:  *timeStart,
+					TimeEnd:    *timeEnd,
+					CourseName: row[3],
+				})
+			}
+
+			if row[4] != "" {
+				rooms[lastRoomName].AppendTimeSlotToMonday(internal.TimeSlot{
+					TimeStart:  *timeStart,
+					TimeEnd:    *timeEnd,
+					CourseName: row[4],
+				})
+			}
+
+			if row[5] != "" {
+				rooms[lastRoomName].AppendTimeSlotToTuesday(internal.TimeSlot{
+					TimeStart:  *timeStart,
+					TimeEnd:    *timeEnd,
+					CourseName: row[5],
+				})
+			}
+
+			if row[6] != "" {
+				rooms[lastRoomName].AppendTimeSlotToWednesday(internal.TimeSlot{
+					TimeStart:  *timeStart,
+					TimeEnd:    *timeEnd,
+					CourseName: row[6],
+				})
+			}
+
+			if row[7] != "" {
+				rooms[lastRoomName].AppendTimeSlotToThursday(internal.TimeSlot{
+					TimeStart:  *timeStart,
+					TimeEnd:    *timeEnd,
+					CourseName: row[7],
+				})
+			}
 		}
+	}
+
+	for _, r := range rooms {
+		sort.Slice(r.Sunday, func(i, j int) bool {
+			return r.Sunday[i].TimeEnd.IsBefore(&r.Sunday[j].TimeStart)
+		})
+		sort.Slice(r.Monday, func(i, j int) bool {
+			return r.Monday[i].TimeEnd.IsBefore(&r.Monday[j].TimeStart)
+		})
+		sort.Slice(r.Tuesday, func(i, j int) bool {
+			return r.Tuesday[i].TimeEnd.IsBefore(&r.Tuesday[j].TimeStart)
+		})
+		sort.Slice(r.Wednesday, func(i, j int) bool {
+			return r.Wednesday[i].TimeEnd.IsBefore(&r.Wednesday[j].TimeStart)
+		})
+		sort.Slice(r.Thursday, func(i, j int) bool {
+			return r.Thursday[i].TimeEnd.IsBefore(&r.Thursday[j].TimeStart)
+		})
 	}
 
 	roomsJsonByte, err := json.Marshal(rooms)
