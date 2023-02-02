@@ -22,7 +22,7 @@ func main() {
 		}
 	}()
 
-	rows, err := f.GetRows("Sheet4")
+	rows, err := f.GetRows("tweeq-schedule")
 	if err != nil {
 		fmt.Println(err)
 		return

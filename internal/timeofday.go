@@ -30,8 +30,8 @@ func ParseTimeOfDay(time string) (*TimeOfDay, error) {
 
 	// (isAM && isPM) || (!isAM && !isPM)
 	// that can't be both true or both false, so it's invalid
-	isAM := timePartsWithAMandPM[1] == "AM"
-	isPM := timePartsWithAMandPM[1] == "PM"
+	isAM := timePartsWithAMandPM[1] == "AM" || timePartsWithAMandPM[1] == "am"
+	isPM := timePartsWithAMandPM[1] == "PM" || timePartsWithAMandPM[1] == "pm"
 	if isAM == isPM {
 		return &TimeOfDay{}, fmt.Errorf("invalid am or pm format, expected: 12:30 AM, but got: %s", time)
 	}
