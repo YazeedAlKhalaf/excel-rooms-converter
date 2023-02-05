@@ -1,9 +1,9 @@
 package internal
 
 type TimeSlot struct {
-	TimeStart  TimeOfDay `json:"time_start"`
-	TimeEnd    TimeOfDay `json:"time_end"`
-	CourseName string    `json:"course_name"`
+	TimeStart  TimeOfDay `json:"timeStart"`
+	TimeEnd    TimeOfDay `json:"timeEnd"`
+	CourseName string    `json:"courseName"`
 }
 
 func (ts *TimeSlot) IsFree() bool {
